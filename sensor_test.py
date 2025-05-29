@@ -9,15 +9,15 @@ from mmwave.mmwave import MMWaveRadar
 
 # Sensor enable/disable configuration
 SENSOR_CONFIG = {
-    'BH1750': False,    # Enable light sensor
-    'BME280': False,   # Enable temperature/humidity/pressure sensor
+    'BH1750': True,    # Enable light sensor
+    'BME280': True,   # Enable temperature/humidity/pressure sensor
     'ZPHS01C': True,    # Enable air quality sensor
-    'MMWAVE': False     # Enable mmWave radar
+    'MMWAVE': True     # Enable mmWave radar
 }
 
 # Radar configuration
 RADAR_CONFIG = {
-    'port': '/dev/ttyACM0',
+    'port': '/dev/ttyACM1',
     'baudrate': 115200,
     'detection_distance': 5,  # 1-8
     'no_target_duration': 10,  # seconds
@@ -142,7 +142,7 @@ def main():
         
         if SENSOR_CONFIG['BH1750']:
             try:
-                sensors['light'] = BH1750()
+                sensors['light'] = BH1750(bus_number=5)
                 print("BH1750 sensor initialized successfully")
             except Exception as e:
                 print(f"Failed to initialize BH1750 sensor: {e}")
@@ -150,7 +150,7 @@ def main():
         
         if SENSOR_CONFIG['BME280']:
             try:
-                sensors['bme'] = BME280()
+                sensors['bme'] = BME280(bus_number=5)
                 print("BME280 sensor initialized successfully")
             except Exception as e:
                 print(f"Failed to initialize BME280 sensor: {e}")
@@ -158,7 +158,7 @@ def main():
         
         if SENSOR_CONFIG['ZPHS01C']:
             try:
-                sensors['air'] = ZPHS01C(port="/dev/ttyACM0")
+                sensors['air'] = ZPHS01C(port="/dev/ttyACM2")
                 # 开启粉尘测量
                 sensors['air'].control_dust_measurement(True)
                 # 启动主动上传模式
