@@ -73,6 +73,9 @@ def initialize_radar(radar):
             radar.disable_config_mode()
             return False
         
+        if radar.set_bluetooth(False) == MMWaveRadar.AskStatus.Success:
+            print("Bluetooth disabled")
+            
         # Get and print current configuration
         config = radar.get_config()
         if config:

@@ -346,6 +346,33 @@ class MMWaveRadar:
         except Exception as e:
             print(f"Failed to get version: {e}")
         return None
+    
+    def set_bluetooth(self, enable):
+        """
+        Set Bluetooth on/off
+
+        Args:
+            enable (bool): True to turn on Bluetooth, False to turn off
+
+        Returns:
+            AskStatus: Success or Error
+        """
+        if not self.config_mode:
+            return self.AskStatus.Error
+
+        try:
+            if enable:
+                # Turn on Bluetooth
+                cmd = bytes([0xFD, 0xFC, 0xFB, 0xFA, 0x04, 0x00, 0xA4, 0x00, 0x01, 0x00, 0x04, 0x03, 0x02, 0x01])
+            else:
+                # Turn off Bluetooth
+                cmd = bytes([0xFD, 0xFC, 0xFB, 0xFA, 0x04, 0x00, 0xA4, 0x00, 0x00, 0x00, 0x04, 0x03, 0x02, 0x01])
+            success, response = self.send_command(cmd)
+            if success and len(response) >= 14 and response[7] == 0x01:
+                return self.AskStatus.Success
+        except Exception as e:
+            print(f"Failed to set bluetooth: {e}")
+        return self.AskStatus.Error
 
     def set_detection_distance(self, distance, times):
         """
